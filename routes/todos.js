@@ -38,20 +38,51 @@ router.post('/',(req,res,next)=>{
         }
     )
 
-    res(todo);
+    res.send(todo);
+})
+
+//UPDATE todos by put
+router.put('/:id',(req,res,next)=>{
+    todo = todo.map(todo=>{
+                           if(todo.id == req.params.id)
+                            {
+                            return {
+                                    id:crypto.randomUUID(),
+                                    title:'updated via put',
+                                    status: 'updated'
+                                }
+                            }
+                            else
+                                return todo;
+                          }
+                    )       
+
+    res.send(todo);
+})
+
+
+//UPDATE todos by patch 
+router.patch('/:id',(req,res,next)=>{
+    const todoUpdates = todo.find(item=> item.id == req.params.id)
+    todoUpdates.title = 'UPDATED via patch';
+    todoUpdates.status = 'Just updated'
+    todo = todo.map(todo=>{
+        if(todo.id == req.params.id)
+            return todoUpdates;
+    })
+    res.send(todo);
 })
 
 
 //DELETE todo by id
-router.put('/:id',(req,res,next)=>{
+router.delete('/:id',(req,res,next)=>{
     todo = todo.filter(todo=>{
         if(todo.id != req.params.id)
             return todo;
     })
 
-    res(todo);
+    res.send(todo);
 })
 
-console.log(todo)
 
 module.exports = router
