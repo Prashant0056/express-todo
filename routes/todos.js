@@ -73,9 +73,10 @@ router.patch('/:id',(req,res,next)=>{
     const todoUpdates = todo.find(item=> item.id == req.params.id)
     todoUpdates.title = 'UPDATED via patch';
     todoUpdates.status = 'Just updated'
-    todo = todo.map(todo=>{
-        if(todo.id == req.params.id)
-            return todoUpdates;
+    todo = todo.map(todo=> {
+        if(todo.id === req.params.id)
+            return todo;
+        else return todo;
     })
     res.send(todo);
 })
