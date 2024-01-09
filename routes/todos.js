@@ -13,7 +13,14 @@ todo = [
 
 //GET all todos
 router.get('/',(req,res,next)=>{
-    res.send(todo)
+    let todoByStatus = todo;
+    if(req.query.status === 'completed')
+    {
+        todoByStatus = todo.filter(item=> item.status === 'completed');
+            
+    }
+    res.send(todoByStatus);
+    
 })
 
 //GET todos by id
