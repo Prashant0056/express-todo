@@ -25,7 +25,7 @@ router.get('/',(req,res)=>{
 })
 
 //GET todos by id
-router.get('/:id',(req,res,next)=>{
+router.get('/:id',(req,res)=>{
     let todoById = []
     todoById = todo.filter(items=>{
         if(items.id==req.params.id)
@@ -36,7 +36,7 @@ router.get('/:id',(req,res,next)=>{
 })
 
 //POST new todo
-router.post('/',(req,res,next)=>{
+router.post('/',(req,res)=>{
     let idForNewItem = idGenerator();
     todo.push(
         {
@@ -57,24 +57,36 @@ router.post('/',(req,res,next)=>{
     })
 })
 
-// //UPDATE todos by put
-// router.put('/:id',(req,res,next)=>{
-//     todo = todo.map(todo=>{
-//                            if(todo.id == req.params.id)
-//                             {
-//                             return {
-//                                     id:crypto.randomUUID(),
-//                                     title:'updated via put',
-//                                     status: 'updated'
-//                                 }
-//                             }
-//                             else
-//                                 return todo;
-//                           }
-//                     )       
 
-//     res.send(todo);
-// })
+
+
+//UPDATE todos by put
+router.put('/:id',(req,res)=>{
+    const newID = idGenerator();
+    console.log("test")
+    todo = todo.map(todo=>{
+                           if(todo.id === req.params.id)
+                            {
+                                return {
+                                        id:newID,
+                                        title:'updated via put',
+                                        status: 'updated'
+                                       }
+                            }
+                           else
+                            return todo;
+                          }
+                    )    
+    
+    const todoJSON = JSON.stringify(todo,null,2)
+    console.log(todoJSON)
+    fs.writeFile(todoPath,todoJSON,(err)=>{
+            if(err)
+                res.status(500).send("Failed to update")
+            else
+                res.status(200).send("Successfully updated")
+            })
+})
 
 
 // //UPDATE todos by patch 
