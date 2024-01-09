@@ -35,19 +35,27 @@ router.get('/:id',(req,res,next)=>{
     res.send(todoById);
 })
 
-// //POST new todo
-// router.post('/',(req,res,next)=>{
-//     let idForNewItem = crypto.randomUUID();
-//     todo.push(
-//         {
-//             id:idForNewItem,
-//             title:'new item',
-//             status:'ongoing'
-//         }
-//     )
-
-//     res.send(todo);
-// })
+//POST new todo
+router.post('/',(req,res,next)=>{
+    let idForNewItem = idGenerator();
+    todo.push(
+        {
+            id:idForNewItem,
+            title:'new item',
+            status:'ongoing'
+        }
+    )
+    
+    const todoJSON = JSON.stringify(todo,null,2)
+    // console.log(todo,"  todo")
+    // console.log(todoJSON,"  json")
+    fs.writeFile(todoPath,todoJSON,(err)=>{
+        if(err)
+            res.status(500).send("Failed to post")
+        else
+            res.status(200).send("Successfully posted")
+    })
+})
 
 // //UPDATE todos by put
 // router.put('/:id',(req,res,next)=>{
