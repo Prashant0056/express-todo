@@ -10,10 +10,16 @@ const idGenerator = () =>{
 } 
 
 const todoPath = path.join(__dirname,'..','data','todo.json');
-let todo = JSON.parse(fs.readFileSync(todoPath, 'utf-8'))
+let todo;
+
+function readTodo(){
+    todo = JSON.parse(fs.readFileSync(todoPath, 'utf-8'))
+}
+
 
 //GET all todos
 router.get('/',(req,res)=>{
+    readTodo();
     let todoByStatus = todo;
     if(req.query.status === 'completed')
     {
@@ -26,6 +32,7 @@ router.get('/',(req,res)=>{
 
 //GET todos by id
 router.get('/:id',(req,res)=>{
+    readTodo();
     let todoById = []
     todoById = todo.filter(items=>{
         if(items.id==req.params.id)
@@ -37,6 +44,7 @@ router.get('/:id',(req,res)=>{
 
 //POST new todo
 router.post('/',(req,res)=>{
+    readTodo();
     let idForNewItem = idGenerator();
     todo.push(
         {
@@ -60,6 +68,7 @@ router.post('/',(req,res)=>{
 
 //UPDATE todos by put
 router.put('/:id',(req,res)=>{
+    readTodo();
     const newID = idGenerator();
     todo = todo.map((item)=>{
             if(item.id == req.params.id){
@@ -85,29 +94,44 @@ router.put('/:id',(req,res)=>{
 })
 
 
-// //UPDATE todos by patch 
-// router.patch('/:id',(req,res,next)=>{
-//     const todoUpdates = todo.find(item=> item.id == req.params.id)
-//     todoUpdates.title = 'UPDATED via patch';
-//     todoUpdates.status = 'Just updated'
-//     todo = todo.map(todo=> {
-//         if(todo.id === req.params.id)
-//             return todo;
-//         else return todo;
-//     })
-//     res.send(todo);
-// })
+//UPDATE todos by patch 
+router.patch('/:id',(req,res)=>{
+    readTodo();
+    let todoUpdates = todo.find(item=> item.id == req.params.id)
+    todoUpdates.title = 'UPDATED via patch';
+    todoUpdates.status = 'Just updated';
+    todo = todo.map(item=> {
+        if(item.id === req.params.id)
+            return todoUpdates;
+        else return item;
+    })
+    
+    const todoJSON = JSON.stringify(todo,null,2)
+    fs.writeFile(todoPath,todoJSON,(err)=>{
+            if(err)
+                res.status(500).send("Failed to update")
+            else
+                res.status(200).send("Successfully updated via patch")
+            })
+
+})
 
 
-// //DELETE todo by id
-// router.delete('/:id',(req,res,next)=>{
-//     todo = todo.filter(todo=>{
-//         if(todo.id != req.params.id)
-//             return todo;
-//     })
-
-//     res.send(todo);
-// })
+//DELETE todo by id
+router.delete('/:id',(req,res,next)=>{
+    readTodo();
+    todo = todo.filter(todo=>{
+        if(todo.id != req.params.id)
+            return todo;
+    })
+    const todoJSON = JSON.stringify(todo,null,2)
+    fs.writeFile(todoPath,todoJSON,(err)=>{
+            if(err)
+                res.status(500).send("Failed to delete")
+            else
+                res.status(200).send("Successfully deleted")
+            })
+})
 
 
 module.exports = router

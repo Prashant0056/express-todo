@@ -5,18 +5,13 @@
     "status": "completed"
   },
   {
-    "id": "2d93ccb7-b815-402e-ad2b-5fa06b41d299",
+    "id": "e9bb6d34-5042-414b-b550-13c86dcd87c7",
     "title": "new item",
     "status": "ongoing"
   },
   {
-    "id": "56d8c402-d619-49db-b926-05972d5309fe",
-    "title": "updated via put",
-    "status": "updated"
-  },
-  {
-    "id": "15af0a39-c399-4dcf-b2af-ec3faa3ddcaa",
-    "title": "updated via put",
-    "status": "updated"
+    "id": "b25115f6-ac5e-44e2-b6d5-56a64a96da2c",
+    "title": "new item",
+    "status": "ongoing"
   }
 ]
