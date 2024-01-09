@@ -10,7 +10,7 @@ const idGenerator = () =>{
 } 
 
 const todoPath = path.join(__dirname,'..','data','todo.json');
-const todo = JSON.parse(fs.readFileSync(todoPath, 'utf-8'))
+let todo = JSON.parse(fs.readFileSync(todoPath, 'utf-8'))
 
 //GET all todos
 router.get('/',(req,res)=>{
@@ -47,8 +47,6 @@ router.post('/',(req,res)=>{
     )
     
     const todoJSON = JSON.stringify(todo,null,2)
-    // console.log(todo,"  todo")
-    // console.log(todoJSON,"  json")
     fs.writeFile(todoPath,todoJSON,(err)=>{
         if(err)
             res.status(500).send("Failed to post")
@@ -63,23 +61,21 @@ router.post('/',(req,res)=>{
 //UPDATE todos by put
 router.put('/:id',(req,res)=>{
     const newID = idGenerator();
-    console.log("test")
-    todo = todo.map(todo=>{
-                           if(todo.id === req.params.id)
-                            {
-                                return {
-                                        id:newID,
-                                        title:'updated via put',
-                                        status: 'updated'
-                                       }
-                            }
-                           else
-                            return todo;
-                          }
-                    )    
+    todo = todo.map((item)=>{
+            if(item.id == req.params.id){
+                return {
+                        id:newID,
+                        title:'updated via put',
+                        status: 'updated'
+                       }
+            } else
+            {
+                return item;
+            }
+        }
+    )    
     
     const todoJSON = JSON.stringify(todo,null,2)
-    console.log(todoJSON)
     fs.writeFile(todoPath,todoJSON,(err)=>{
             if(err)
                 res.status(500).send("Failed to update")
